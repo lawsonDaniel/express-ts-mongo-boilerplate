@@ -29,7 +29,26 @@ router.get('/examples', (req: express.Request, res: express.Response) => {
  * @openapi
  * /api/v1/auth/login:
  *   post:
- *     description: Returns a message from the example route
+ *     description: Returns a message from the example 
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 description: The email of the user
+ *                 example: user@example.com
+ *               password:
+ *                 type: string
+ *                 description: The password of the user
+ *                 example: Password123!
+ *             required:
+ *               - email
+ *               - password
  *     responses:
  *       200:
  *         description: A message from the example route
@@ -41,9 +60,26 @@ router.post('/auth/login',authClass.login)
  * /api/v1/auth/register:
  *   post:
  *     description: Returns a message from the example route
- *     responses:
- *       200:
- *         description: A message from the example route
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 description: The email of the user
+ *                 example: user@example.com
+ *               password:
+ *                 type: string
+ *                 description: The password of the user
+ *                 example: Password123!
+ *             required:
+ *               - email
+ *               - password
+ *    
  *         
  */
 router.post('/auth/register',authClass.register)

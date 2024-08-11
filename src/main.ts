@@ -2,6 +2,8 @@ import express from 'express';
 import swaggerUi from 'swagger-ui-express';
 import swaggerJsdoc from 'swagger-jsdoc';
 import router from './routes/api';
+import mongoose from 'mongoose';
+import bodyParser from 'body-parser';
 
 const app = express();
 const port = 3000;
@@ -18,10 +20,17 @@ const swaggerOptions = {
   },
   apis: ['./src/routes/*.ts'], // Path to the API docs
 };
+const dbconnectionString: string = process.env.DB_CONNECTION_STRING as string || 'mongodb+srv://lawblaze:xdwWaOBt4kDTpuqZ@magblaze.6yixeph.mongodb.net/?retryWrites=true&w=majority&appName=magblaze'
+mongoose.connect(dbconnectionString).then((res)=>{
+  console.log("database connected")
+}).catch((err)=>{
+  console.log("error from database connection",err)
+})
 
 // Initialize swagger-jsdoc
 const swaggerSpec = swaggerJsdoc(swaggerOptions);
-
+// parse application/json
+app.use(bodyParser.json())
 // Set up Swagger UI
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
