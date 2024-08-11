@@ -2,6 +2,7 @@ import { Types } from "mongoose";
 import { User } from "../../model/user.model";
 import { apiResponse } from "../../util/apiResponse";
 import bcrypt from 'bcrypt'
+import jwt from 'jsonwebtoken';
 
 interface LoginProps{
     email:string;
@@ -19,7 +20,7 @@ class AuthService {
         const {email,password} = data;
         try{
             //find user
-            const isUserFound:User| null= await User.findOne({email});
+            const isUserFound:User| null= await User.findOne({email}).lean();
             console.log("isUserFound",isUserFound)
             if(isUserFound && isUserFound?.password){
                 //do something
@@ -28,10 +29,12 @@ class AuthService {
                 if(isPassHash){
                     isUserFound['password'] = undefined;
                     delete isUserFound['password']
+                    const token = await jwt.sign(isUserFound, process.env.JWT_SECRET_STRING as string);
                     return {
                         message:"login success",
                         status: 200,
-                        data:isUserFound
+                        data:isUserFound,
+                        token
                     }
                 }
             }else{
@@ -41,7 +44,9 @@ class AuthService {
                 }
             }
         }catch(err){
+            console.log("message err",err)
             return {
+
                 massage: err,
                 status: 500
             }
