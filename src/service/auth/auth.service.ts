@@ -47,7 +47,7 @@ class AuthService {
             console.log("message err",err)
             return {
 
-                massage: err,
+                message: err,
                 status: 500
             }
         }
