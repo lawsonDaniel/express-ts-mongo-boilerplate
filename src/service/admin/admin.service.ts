@@ -30,22 +30,69 @@ class AdminService {
       };
     }
   };
-  public getProductDetails = async(query:ProductQueryParams)=>{
-    try{
-      const product = await Product.find({
-        query
-      })
+  public getProductDetails = async (query: ProductQueryParams, page: number = 1, perPage: number = 10) => {
+    try {
+      // Validate and set default values for page and perPage
+      const currentPage = page > 0 ? page : 1; // Ensure page is positive
+      const itemsPerPage = perPage > 0 ? perPage : 10; // Ensure perPage is positive
+  
+      // Calculate the skip value
+      const skip = (currentPage - 1) * itemsPerPage;
+  
+      // Perform the database query with pagination
+      const products = await Product.find({
+        ...query,
+        skip,
+        limit: itemsPerPage
+      });
+  
+      // Get the total number of products for pagination info
+      const totalProducts = await Product.countDocuments(query);
+  
       return {
-        message:"product gotten",
-        data: product,
-        status:200
-      }
+        message: "Product details retrieved",
+        data: {
+          products,
+          pagination: {
+            totalProducts,
+            totalPages: Math.ceil(totalProducts / itemsPerPage),
+            currentPage,
+            perPage: itemsPerPage
+          }
+        },
+        status: 200
+      };
+    } catch (err) {
+      return {
+        message: err,
+        status: 500
+      };
+    }
+  }
+  public acceptDeclineProduct = async(id: string,accept: boolean)=>{
+    try{
+   // Update the product
+const updatedProduct = await Product.updateOne({ _id: id }, { approved: accept });
+if (updatedProduct.modifiedCount === 0) {
+  return {
+    message: "Product update failed",
+    status: 400
+  };
+}
+
+// Return a success response if needed
+return {
+  message: "Product updated successfully",
+  status: 200
+};
+
     }catch(err){
       return {
         message:err,
         status:500
       }
     }
+
   }
 }
 
