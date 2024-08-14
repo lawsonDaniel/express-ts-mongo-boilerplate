@@ -22,6 +22,7 @@ class AdminClass {
     public getAllUsers = async(req: Request, res: Response)=>{
         const {page,perPage} = req.params
         const response = await Admin.getAllUsers(page as unknown as number,perPage as unknown as number)
+        return res.json(response)
     }
 }
 
