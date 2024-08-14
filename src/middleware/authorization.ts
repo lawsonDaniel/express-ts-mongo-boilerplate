@@ -1,12 +1,15 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 
-const secretKey: any = process.env.JWT_SECRET;
+
 
 function isAuthenticated(req: any, res: Response, next: NextFunction) {
+    const secretKey: string = process.env.JWT_SECRET_STRING as string;
+   
   // Get the token from the request headers
   let token: any = req.header("Authorization");
   token = token && token.split(" ")[1];
+
   // Check if the token is missing
   if (!token) {
     return res.status(401).json({ message: "Unauthorized: Missing token" });
