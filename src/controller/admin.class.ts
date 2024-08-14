@@ -19,6 +19,10 @@ class AdminClass {
         const response = await Admin.acceptDeclineProduct(id as unknown as string,accept)
         return res.json(response)
     }
+    public getAllUsers = async(req: Request, res: Response)=>{
+        const {page,perPage} = req.params
+        const response = await Admin.getAllUsers(page as unknown as number,perPage as unknown as number)
+    }
 }
 
 const adminClass = new AdminClass()

@@ -94,6 +94,45 @@ return {
     }
 
   }
+  public getAllUsers = async(page:number,perPage:number)=>{
+    try {
+      // Validate and set default values for page and perPage
+      const currentPage = page > 0 ? page : 1; // Ensure page is positive
+      const itemsPerPage = perPage > 0 ? perPage : 10; // Ensure perPage is positive
+    
+      // Calculate the skip value
+      const skip = (currentPage - 1) * itemsPerPage;
+    
+      // Perform the database query with pagination
+      const users = await User.find()
+        .skip(skip)
+        .limit(itemsPerPage);
+    
+      // Get the total number of users for pagination info
+      const totalUsers = await User.countDocuments();
+    
+      return {
+        message: "User details retrieved",
+        data: {
+          users,
+          pagination: {
+            totalUsers,
+            totalPages: Math.ceil(totalUsers / itemsPerPage),
+            currentPage,
+            perPage: itemsPerPage
+          }
+        },
+        status: 200
+      };
+    } catch (error) {
+      return {
+        message: "Error retrieving user details",
+        error: error,
+        status: 500
+      };
+    }
+    
+  }
 }
 
 const Admin = new AdminService();

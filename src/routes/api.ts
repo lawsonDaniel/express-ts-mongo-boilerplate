@@ -12,5 +12,7 @@ router.get('/auth/user',authClass.getAuthUser)
 router.get('/dashboard',adminClass.getDashboardDetails)
 router.get('/products',adminClass.getProducts)
 router.patch('/products',adminClass.acceptDeclineProduct)
+//user routes
+router.get('/user',adminClass.getAllUsers)
 
 export default router;
