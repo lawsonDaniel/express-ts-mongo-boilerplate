@@ -1,6 +1,9 @@
 import { Product } from "../../model/product.model";
 import { User } from "../../model/user.model";
 
+interface ProductQueryParams {
+  approved?:boolean
+}
 class AdminService {
   public getDashboardDetails = async () => {
     try {
@@ -27,6 +30,23 @@ class AdminService {
       };
     }
   };
+  public getProductDetails = async(query:ProductQueryParams)=>{
+    try{
+      const product = await Product.find({
+        query
+      })
+      return {
+        message:"product gotten",
+        data: product,
+        status:200
+      }
+    }catch(err){
+      return {
+        message:err,
+        status:500
+      }
+    }
+  }
 }
 
 const Admin = new AdminService();

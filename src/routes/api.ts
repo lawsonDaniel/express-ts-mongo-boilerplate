@@ -10,5 +10,6 @@ router.post('/auth/forget-password',authClass.register)
 router.get('/auth/user',authClass.getAuthUser)
 //dashboard routes
 router.get('/dashboard',adminClass.getDashboardDetails)
+router.get('/products',adminClass.getProducts)
 
 export default router;
