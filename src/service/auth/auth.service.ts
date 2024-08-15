@@ -37,11 +37,16 @@ class AuthService {
                         data:isUserFound,
                         token
                     }
+                }else{
+                    return {
+                        message:"Incorrect password",
+                        status: 401
+                    }
                 }
             }else{
                 return {
                     message:"user not found",
-                    status: 404
+                    status: 401
                 }
             }
         }catch(err){

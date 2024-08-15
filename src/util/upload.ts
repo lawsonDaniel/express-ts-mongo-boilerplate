@@ -20,7 +20,7 @@ export const uploadBase64Image = async (base64String: string) => {
     const result = await cloudinary.uploader.upload(   base64String,
         {
           resource_type: "auto", // Automatically detect the file type
-        
+          folder: 'banner_images'
         },(err,res)=>{
            if(err) return err
            return res?.secure_url

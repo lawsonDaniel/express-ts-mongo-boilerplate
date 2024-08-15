@@ -5,10 +5,11 @@ import router from './routes/api';
 import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
+import cors from 'cors';
 
 dotenv.config();
 const app = express();
-const port = 3000;
+const port = 3001;
 app.use(bodyParser.json({ limit: '50mb' })); // Increase limit to 50MB
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 // Set up Swagger options
@@ -33,7 +34,9 @@ mongoose.connect(dbconnectionString).then((res)=>{
 }).catch((err)=>{
   console.log("error from database connection",err)
 })
-
+app.use(cors({
+  origin: 'http://localhost:3000', // Allow frontend port
+}));
 // Initialize swagger-jsdoc
 const swaggerSpec = swaggerJsdoc(swaggerOptions);
 // parse application/json
