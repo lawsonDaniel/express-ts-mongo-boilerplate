@@ -1,5 +1,8 @@
+import { UploadApiResponse } from "cloudinary";
+import { Banner } from "../../model/banner.model";
 import { Product } from "../../model/product.model";
 import { User } from "../../model/user.model";
+import { uploadBase64Image } from "../../util/upload";
 
 interface ProductQueryParams {
   approved?:boolean
@@ -132,6 +135,52 @@ return {
       };
     }
     
+  }
+  private updateBanners = async (results: UploadApiResponse[]) => {
+    // Create an array of update promises
+    const updatePromises = results.map((bannerImage, index) => {
+        // Determine which field to update based on the index
+        const field = `banner${index + 1}`;
+        
+        // Create an update object
+        const updateObj = {
+            [field]: bannerImage?.secure_url
+        };
+
+        // Update the document (assuming you want to update a specific document, you need to provide a query filter)
+        return Banner.findOneAndUpdate({}, updateObj, { new: true, upsert: true })
+            .then(() => {
+                console.log(`Banner ${index + 1} updated successfully.`);
+            })
+            .catch((error) => {
+                console.error(`Error updating banner ${index + 1}:`, error);
+            });
+    });
+
+    // Wait for all update operations to complete
+    await Promise.all(updatePromises);
+};
+
+  public uploadBannerImages = async(bannerImages:[any])=>{
+    try{
+        // Use Promise.all to upload all images concurrently
+    const uploadPromises = bannerImages.map(base64Image => {
+     return  uploadBase64Image(base64Image)
+    });
+    const results = await Promise.all(uploadPromises);
+    const response = await this.updateBanners(results)
+  
+    return {
+      message:"Banner Image Upload Success",
+      status:201
+    }
+    }catch(err){
+      return {
+        message: "Error uploading images",
+        error: err,
+        status: 500
+      }
+    }
   }
 }
 

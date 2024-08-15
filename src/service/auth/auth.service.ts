@@ -18,6 +18,7 @@ interface User {
 class AuthService {
     public loginService = async(data:LoginProps)=>{
         const {email,password} = data;
+      
         try{
             //find user
             const isUserFound:User| null= await User.findOne({email}).lean();

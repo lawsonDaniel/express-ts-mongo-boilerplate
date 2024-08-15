@@ -5,10 +5,12 @@ import router from './routes/api';
 import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
+
 dotenv.config();
 const app = express();
 const port = 3000;
-
+app.use(bodyParser.json({ limit: '50mb' })); // Increase limit to 50MB
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 // Set up Swagger options
 const swaggerOptions = {
   definition: {
@@ -21,6 +23,10 @@ const swaggerOptions = {
   },
   apis: ['./src/routes/*.ts'], // Path to the API docs
 };
+
+
+
+
 const dbconnectionString: string = process.env.DB_CONNECTION_STRING as string 
 mongoose.connect(dbconnectionString).then((res)=>{
   console.log("database connected")
