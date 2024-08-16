@@ -37,6 +37,10 @@ class AdminClass {
       const response = await Admin.uploadBannerImages(banner_image as unknown as [any])
       return res.json(response)
     }
+    public bannerImage = async (req:Request, res: Response)=>{
+        const response  = await Admin.getBannerImage()
+        return res.status(response?.status).json(response)
+    }
 }
 
 const adminClass = new AdminClass()

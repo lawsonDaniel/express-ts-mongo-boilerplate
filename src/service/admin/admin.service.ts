@@ -182,6 +182,23 @@ return {
       }
     }
   }
+  public getBannerImage = async()=>{
+    try{
+      const bannerImage = await Banner.findOne()
+      console.log("bannerImage",bannerImage)
+      return {
+        message:'banner image gotten successfully',
+        data: bannerImage,
+        status:200
+      }
+    }catch(err){
+      console.log(err)
+      return {
+        message:err,
+        status:500
+      }
+    }
+  }
 }
 
 const Admin = new AdminService();

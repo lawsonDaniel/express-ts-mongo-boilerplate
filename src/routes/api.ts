@@ -17,6 +17,6 @@ router.patch('/products',isAuthenticated,adminClass.acceptDeclineProduct)
 router.get('/user',isAuthenticated,adminClass.getAllUsers)
 //banner images
 router.post('/bannerImages',isAuthenticated,adminClass.uploadBannerImage)
-
+router.get('/bannerImages',adminClass.bannerImage)
 export default router;
 
