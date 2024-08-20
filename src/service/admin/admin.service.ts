@@ -1,6 +1,6 @@
 import { UploadApiResponse } from "cloudinary";
 import { Banner } from "../../model/banner.model";
-import { Product } from "../../model/product.model";
+import { Product, ReviewState } from "../../model/product.model";
 import { User } from "../../model/user.model";
 import { uploadBase64Image } from "../../util/upload";
 
@@ -12,9 +12,9 @@ class AdminService {
     try {
       // Await all countDocuments promises
       const totalUsers = await User.countDocuments();
-      const totalProducts = await Product.countDocuments();
-      const totalApproved = await Product.countDocuments({ approved: true });
-      const totalDeclined = await Product.countDocuments({ approved: false });
+      const totalProducts = await Product.countDocuments({approved: ReviewState.Pending});
+      const totalApproved = await Product.countDocuments({ approved: ReviewState.True });
+      const totalDeclined = await Product.countDocuments({ approved: ReviewState.False });
       return {
         message: "Dashboard information successfully generated",
         status: 200,
@@ -75,7 +75,7 @@ class AdminService {
   public acceptDeclineProduct = async(id: string,accept: boolean)=>{
     try{
    // Update the product
-const updatedProduct = await Product.updateOne({ _id: id }, { approved: accept });
+const updatedProduct = await Product.updateOne({ _id: id }, { approved: String(accept) });
 if (updatedProduct.modifiedCount === 0) {
   return {
     message: "Product update failed",
@@ -165,7 +165,7 @@ return {
     try{
         // Use Promise.all to upload all images concurrently
     const uploadPromises = bannerImages.map(base64Image => {
-     return  uploadBase64Image(base64Image)
+     return  uploadBase64Image(base64Image,'banner_images')
     });
     const results = await Promise.all(uploadPromises);
     const response = await this.updateBanners(results)

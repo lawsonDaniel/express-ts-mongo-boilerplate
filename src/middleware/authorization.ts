@@ -31,7 +31,7 @@ function isAuthenticated(req: any, res: Response, next: NextFunction) {
     }
 
     // If the token is valid and not expired, you can access the user information in the decoded object
-    let userData = decoded?.data;
+    let userData = decoded;
     if (userData) {
       delete userData?.password;
     }

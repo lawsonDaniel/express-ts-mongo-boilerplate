@@ -16,3 +16,4 @@ export const apiResponse = (res:Response,data:unknown,status:number,message:stri
     }
    
 }
+

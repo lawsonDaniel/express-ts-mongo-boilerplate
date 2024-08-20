@@ -1,7 +1,7 @@
 
 import { v2 as cloudinary } from "cloudinary";
 import { error } from "console";
-export const uploadBase64Image = async (base64String: string) => {
+export const uploadBase64Image = async (base64String: string,folder: string) => {
     cloudinary.config({
         cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
         api_key: process.env.CLOUDINARY_API_KEY,
@@ -20,7 +20,7 @@ export const uploadBase64Image = async (base64String: string) => {
     const result = await cloudinary.uploader.upload(   base64String,
         {
           resource_type: "auto", // Automatically detect the file type
-          folder: 'banner_images'
+          folder: folder
         },(err,res)=>{
            if(err) return err
            return res?.secure_url
@@ -32,3 +32,19 @@ export const uploadBase64Image = async (base64String: string) => {
     throw error;
   }
 };
+
+
+export function generateAlphaNumericCodes(count =1, length=8) {
+  const codes = [];
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+
+  for (let i = 0; i < count; i++) {
+      let code = '';
+      for (let j = 0; j < length; j++) {
+          code += characters.charAt(Math.floor(Math.random() * characters.length));
+      }
+      codes.push(code);
+  }
+  
+  return codes;
+}

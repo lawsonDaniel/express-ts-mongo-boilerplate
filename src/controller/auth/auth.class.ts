@@ -9,14 +9,16 @@ class Auth{
         return res.json(response)
     };
     public register = async (req:Request, res:Response) => {
-        const {email,password} = req.body
-        const response = await authService.registerService({email,password})
+        const {email,password,role,username} = req.body
+        const response = await authService.registerService({email,password,role,username})
         console.log("response",response)
        return res.json(response)
     };
     public forgetPassword = async (req:Request, res:Response) => {};
-    public getAuthUser = async (req:Request, res:Response) => {
-        res.send('working')
+    public getAuthUser = async (req:any, res:Response) => {
+         const {email} = req?.user
+        const response =  await authService.getAuthUser(email as unknown as string)
+        return res.json(response)
     };
 }
 

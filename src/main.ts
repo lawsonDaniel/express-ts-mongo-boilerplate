@@ -35,7 +35,7 @@ mongoose.connect(dbconnectionString).then((res)=>{
   console.log("error from database connection",err)
 })
 app.use(cors({
-  origin: 'http://localhost:3000', // Allow frontend port
+  origin: ['http://localhost:3000','http://localhost:3002'], // Allow frontend port
 }));
 // Initialize swagger-jsdoc
 const swaggerSpec = swaggerJsdoc(swaggerOptions);

@@ -9,6 +9,9 @@ const schema = new Schema({
     banner6:{type:String, required:true},
     banner7:{type:String, required:true},
     banner8:{type:String, required:true},
+    banner9:{type:String, required:true},
    
-})
+},
+{ timestamps: true } // Adds createdAt and updatedAt fields
+)
 export const Banner = model('Banner',schema)

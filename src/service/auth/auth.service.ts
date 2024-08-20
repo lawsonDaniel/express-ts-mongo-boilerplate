@@ -7,6 +7,8 @@ import jwt from 'jsonwebtoken';
 interface LoginProps{
     email:string;
     password:string;
+    role?:string;
+    username?:string
 }
 interface User {
     email?: string;
@@ -58,9 +60,38 @@ class AuthService {
             }
         }
     }
+    public getAuthUser = async(email:string)=>{
+        try{
+            //find user based of thier email 
+            const res:any = await User.findOne({email})
+            res['password'] = null;
+            delete res['password'] ;
+            console.log("res from user",res)
+            if(!res){
+                return {
+                    message:"no user found",
+                    status:404
+                }
+            }
+            return {
+                message:"Authenticated user found",
+                data:res,
+                status:200
+            }
+        }catch(err){
+            console.log(err)
+            return {
+                message:err,
+                status:500
+            }
+        }
+    }
     public registerService = async (data: LoginProps) => {
         try {
-            const { email, password } = data;
+            let { email, password,role,username } = data;
+            if(!username){
+                username ='admin@admin'
+            }
             if (email.trim().length < 1 || password.trim().length < 1) {
                 return {
                     message: "Please enter your email or password",
@@ -84,6 +115,8 @@ class AuthService {
             const createdUser:User = await User.create({
                 email,
                 password: hash,
+                role,
+                username
             });
        
            createdUser['password'] = undefined;

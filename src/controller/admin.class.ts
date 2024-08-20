@@ -31,8 +31,8 @@ class AdminClass {
         return res.status(400).json({ message: 'An array of Base64 image strings is required', });
       }
        // Ensure the array has a maximum of 8 images
-    if (banner_image.length > 8) {
-        return res.status(400).json({ error: 'You can only upload up to 8 images at a time' });
+    if (banner_image.length > 9) {
+        return res.status(400).json({ error: 'You can only upload up to 9 images at a time' });
       }
       const response = await Admin.uploadBannerImages(banner_image as unknown as [any])
       return res.json(response)
