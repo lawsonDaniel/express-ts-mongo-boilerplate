@@ -34,7 +34,7 @@ class userControllerClass {
             const body = req.body;
             const {_id} = req?.user;
             const {images} = req.body;
-            console.log("images.length",_id)
+            console.log("images.length",images)
             if (!Array.isArray(images) || images.length === 0) {
              return res.status(400).json({ message: 'please upload 8 images', });
            }

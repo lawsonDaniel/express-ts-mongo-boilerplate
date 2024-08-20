@@ -27,7 +27,7 @@ const schema = new Schema(
         startTime: { type: Date, required: true },
         endTime: { type: Date, required: true },
         category: { type: String, required: true },
-        temp: { type: Number, required: true },
+        temp: { type: Number, required: false, default: 10 },
         promoId:{type: String, required: true},
         approved: { 
             type: String, 
@@ -36,8 +36,8 @@ const schema = new Schema(
             default: ReviewState.Pending 
         },
         createdBy: { 
-            type: Schema.Types.ObjectId, 
-            ref: 'User', 
+            type:String, 
+         
             required: true 
         } // Reference to the User model
     },

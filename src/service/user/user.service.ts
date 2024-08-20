@@ -1,6 +1,7 @@
 import { AnyPtrRecord } from "dns";
 import { Product, ReviewState } from "../../model/product.model";
 import { generateAlphaNumericCodes, uploadBase64Image } from "../../util/upload";
+import mongoose from "mongoose";
 
 class userServiceClass {
     public filter = async (filter: any,_id:string) => {
@@ -41,79 +42,108 @@ class userServiceClass {
         }
     }
     
-    public getPromoCount = async(id:string)=>{
-        try{
-              // Await all countDocuments promises
-      const totalProducts = await Product.countDocuments({createdBy:id});
-      const totalUnderReview = await Product.countDocuments({
-        approved: ReviewState.Pending,
-        createdBy:id
-    });
-      const totalApproved = await Product.countDocuments({
-         approved: ReviewState.True,
-         createdBy:id
-         });
-      const totalDeclined = await Product.countDocuments({
-         approved: ReviewState.False,
-         createdBy:id
-         });
-         const currentDate = new Date();
-
-    const totalExpired = await Product.countDocuments({
-        endDate:{ $gt: currentDate }
-    })
-      return {
-        message: "Dashboard information successfully generated",
-        status: 200,
-        data: {
-          totalUnderReview,
-          totalProducts,
-          totalApproved,
-          totalDeclined,
-          totalExpired
-        }
-      };
-        }catch(err){
+    public getPromoCount = async (id: string) => {
+        try {
+            const objectId = id;
+            console.log("objectId", objectId, id);
+    
+            // Use Promise.all to concurrently execute countDocuments queries
+            const [
+                totalProducts,
+                totalUnderReview,
+                totalApproved,
+                totalDeclined,
+                totalExpired,
+            ] = await Promise.all([
+                Product.countDocuments({ createdBy: objectId}), // Count total products created by the user
+                Product.countDocuments({
+                    approved: ReviewState.Pending, // Products under review
+                    createdBy: objectId,
+                }),
+                Product.countDocuments({
+                    approved: ReviewState.True, // Approved products
+                    createdBy: objectId,
+                }),
+                Product.countDocuments({
+                    approved: ReviewState.False, // Declined products
+                    createdBy: objectId,
+                }),
+                Product.countDocuments({
+                    endDate: { $lt: new Date() }, // Expired products
+                    createdBy: objectId,
+                }),
+            ]);
+    
             return {
-                message:err,
-                status:500
-            }
+                message: "Dashboard information successfully generated",
+                status: 200,
+                data: {
+                    totalProducts,
+                    totalUnderReview,
+                    totalApproved,
+                    totalDeclined,
+                    totalExpired,
+                }
+            };
+        } catch (err) {
+            return {
+                message: err || 'Internal Server Error',
+                status: 500
+            };
         }
     }
-    public createPromo = async (data: any, id: string) => {
+
+   public createPromo = async (data: any, id: string) => {
         try {
             const { images } = data;
             const promoId = generateAlphaNumericCodes();
     
+            // Validate that `images` is an array and has valid items
+            if (!Array.isArray(images) || images.length === 0) {
+                throw new Error('No images provided');
+            }
+    
             // Use Promise.all to upload all images concurrently
             const uploadPromises = images.map((base64Image: any) => {
-                return uploadBase64Image(base64Image, promoId[0]);
+                if (base64Image) {
+                    return uploadBase64Image(base64Image, promoId[0]);
+                } else {
+                    throw new Error('Invalid image data');
+                }
             });
     
             const results = await Promise.all(uploadPromises);
-            
-            // Set the images property to null and then delete it
+    
+            // Remove the images property from data after processing
             delete data.images;
-            const promoImages = results.map((img)=>{
-               return img?.secure_url 
-            })
-            console.log("uploaded images",promoImages)
+            delete data?.createdBy
+            // Extract URLs from the upload results
+            const promoImages = results.map((img) => img?.secure_url);
+    
+            console.log("Uploaded images", promoImages);
+    
+            // Create the new promo document in the database
             const newPromo = await Product.create({
                 images: promoImages,
                 promoId: promoId[0],
-                createdBy:id,
+                createdBy: id, // Correctly saving createdBy as an ObjectId
                 ...data
             });
     
-            return newPromo; // Return the newly created promo
-        } catch (err) {
             return {
-                message: err || "An error occurred",
+                message: "Promo created successfully",
+                data: newPromo,
+                status: 201
+            };
+    
+        } catch (err:any) {
+            console.error("Error creating promo:", err); // Log the error for debugging
+            return {
+                message: err.message || "An error occurred",
                 status: 500
             };
         }
     };
-    
 }
 
 const userService = new userServiceClass();
