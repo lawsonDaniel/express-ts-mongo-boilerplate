@@ -4,7 +4,7 @@ import { generateAlphaNumericCodes, uploadBase64Image } from "../../util/upload"
 import mongoose from "mongoose";
 
 class userServiceClass {
-    public filter = async (filter: any,_id:string) => {
+    public filter = async (filter: any, _id: string, page: number = 1, limit: number = 10) => {
         try {
             const query: any = {};
     
@@ -18,21 +18,35 @@ class userServiceClass {
                 query.createdBy = _id;
             }
     
-           if(query.expired){
-             // Filtering by endDate greater than the current date
-             const currentDate = new Date();
-             query.endDate = { $gt: currentDate };
-     
-             // Filtering by endTime greater than the current time
-             query.endTime = { $gt: currentDate };
-             console.log("query",query)
-           }
-            const response = await Product.find(query).populate('createdBy');
+            // Filtering by expired
+            if (query.expired) {
+                const currentDate = new Date();
+                query.endDate = { $gt: currentDate };
+                query.endTime = { $gt: currentDate };
+            }
+    
+            // Calculate the skip value for pagination
+            const skip = (page - 1) * limit;
+    
+            // Execute the query with pagination
+            const response = await Product.find(query)
+                .populate('createdBy')
+                .skip(skip)
+                .limit(limit);
+    
+            // Get the total count of documents for pagination
+            const totalCount = await Product.countDocuments(query);
     
             return {
                 message: 'Filter applied successfully',
                 status: 200,
-                data: response
+                data: response,
+                pagination: {
+                    totalItems: totalCount,
+                    currentPage: page,
+                    totalPages: Math.ceil(totalCount / limit),
+                    pageSize: limit
+                }
             };
         } catch (err) {
             return {
@@ -41,6 +55,7 @@ class userServiceClass {
             };
         }
     }
+    
     
     public getPromoCount = async (id: string) => {
         try {
@@ -106,7 +121,7 @@ class userServiceClass {
             // Use Promise.all to upload all images concurrently
             const uploadPromises = images.map((base64Image: any) => {
                 if (base64Image) {
-                    return uploadBase64Image(base64Image, promoId[0]);
+                    return uploadBase64Image(base64Image?.img, promoId[0]);
                 } else {
                     throw new Error('Invalid image data');
                 }
