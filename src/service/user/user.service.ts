@@ -55,6 +55,68 @@ class userServiceClass {
             };
         }
     }
+    public publicFilter = async (filter: any, page: number = 1, limit: number = 10) => {
+        try {
+            const query: any = {};
+    
+            // Filtering by approved
+            if (Boolean(filter.approved) === true || filter.approved === false) {
+                query.approved = filter.approved;
+            }
+    
+            // Filtering by items that will expire in 24 hours or less
+            if (filter.ending_soon === true) {
+                const currentDate = new Date();
+                const next24Hours = new Date(currentDate.getTime() + 24 * 60 * 60 * 1000);
+    
+                query.endDate = { $gte: currentDate, $lte: next24Hours };
+                query.endTime = { $gte: currentDate, $lte: next24Hours };
+            }
+    
+            // Filtering by items that will start in 24 hours or less
+            if (filter.startSoon === true) {
+                const currentDate = new Date();
+                const next24Hours = new Date(currentDate.getTime() + 24 * 60 * 60 * 1000);
+    
+                query.startDate = { $gte: currentDate, $lte: next24Hours };
+                query.startTime = { $gte: currentDate, $lte: next24Hours };
+            }
+    
+            // Filtering by temperature
+            if (filter.temp === true) {
+                query.temp = { $gt: 70 };
+            }
+    
+            // Calculate the skip value for pagination
+            const skip = (page - 1) * limit;
+    
+            // Execute the query with pagination
+            const response = await Product.find(query)
+                .populate('createdBy')
+                .skip(skip)
+                .limit(limit);
+    
+            // Get the total count of documents for pagination
+            const totalCount = await Product.countDocuments(query);
+    
+            return {
+                message: 'Filter applied successfully',
+                status: 200,
+                data: response,
+                pagination: {
+                    totalItems: totalCount,
+                    currentPage: page,
+                    totalPages: Math.ceil(totalCount / limit),
+                    pageSize: limit
+                }
+            };
+        } catch (err) {
+            return {
+                message: err || 'An error occurred',
+                status: 500
+            };
+        }
+    }
     
     
     public getPromoCount = async (id: string) => {

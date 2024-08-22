@@ -18,10 +18,14 @@ router.patch('/products',isAuthenticated,adminClass.acceptDeclineProduct)
 router.get('/promoDetails',isAuthenticated,userClass.getProduct)
 router.get('/promoDetailsCount',isAuthenticated,userClass.getProductCount)
 router.post('/promo',isAuthenticated,userClass.uploadPromo)
+//public routes
+router.get('/promo',userClass.getPromo)
+
 //user routes
 router.get('/user',isAuthenticated,adminClass.getAllUsers)
 //banner images
 router.post('/bannerImages',isAuthenticated,adminClass.uploadBannerImage)
 router.get('/bannerImages',adminClass.bannerImage)
+
 export default router;
 
