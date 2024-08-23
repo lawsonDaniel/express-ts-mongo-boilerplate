@@ -65,7 +65,7 @@ class userServiceClass {
             }
     
             // Filtering by items that will expire in 24 hours or less
-            if (filter.ending_soon === true) {
+            if (Boolean(filter.ending_soon) === true) {
                 const currentDate = new Date();
                 const next24Hours = new Date(currentDate.getTime() + 24 * 60 * 60 * 1000);
     
@@ -74,7 +74,7 @@ class userServiceClass {
             }
     
             // Filtering by items that will start in 24 hours or less
-            if (filter.startSoon === true) {
+            if (Boolean(filter.startSoon) === true) {
                 const currentDate = new Date();
                 const next24Hours = new Date(currentDate.getTime() + 24 * 60 * 60 * 1000);
     
@@ -83,7 +83,8 @@ class userServiceClass {
             }
     
             // Filtering by temperature
-            if (filter.temp === true) {
+            if (Boolean(filter.temp) === true) {
+                console.log("Filtering by temperature",filter.temp)
                 query.temp = { $gt: 70 };
             }
     
