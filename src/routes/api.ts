@@ -10,6 +10,7 @@ router.post('/auth/login',authClass.login)
 router.post('/auth/register',authClass.register)
 router.post('/auth/forget-password',authClass.register)
 router.get('/auth/user',isAuthenticated,authClass.getAuthUser)
+router.patch('/auth/user',isAuthenticated,authClass.update)
 //dashboard routes admin
 router.get('/dashboard',isAuthenticated,adminClass.getDashboardDetails)
 router.get('/products',isAuthenticated,adminClass.getProducts)

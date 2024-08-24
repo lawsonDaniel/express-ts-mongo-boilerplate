@@ -14,6 +14,12 @@ class Auth{
         console.log("response",response)
        return res.json(response)
     };
+    public update = async (req:any, res:Response) => {
+        const {_id} = req?.user;
+        const response = await authService.updateService(req.body,_id)
+        console.log("response",response)
+       return res.json(response)
+    };
     public forgetPassword = async (req:Request, res:Response) => {};
     public getAuthUser = async (req:any, res:Response) => {
          const {email} = req?.user

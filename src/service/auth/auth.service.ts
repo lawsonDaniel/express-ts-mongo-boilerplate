@@ -86,6 +86,34 @@ class AuthService {
             }
         }
     }
+    public updateService = async (data: any, id: string) => {
+        try {
+            // Check if the user exists
+            const isUserFound = await User.findOne({ _id: id }); // Assuming you're using MongoDB and _id as the primary key
+            if (!isUserFound) {
+                return {
+                    message: "User not found",
+                    status: 404,
+                };
+            }
+    
+            // Update the user with the new data
+            await isUserFound.updateOne(data);
+    
+            // Return a success response
+            return {
+                message: "User updated successfully",
+                status: 200,
+                data: await User.findOne({ _id: id }), // Fetch the updated user data
+            };
+        } catch (err:any) {
+            return {
+                message: err?.message, // Get the error message
+                status: 500,
+            };
+        }
+    };
+    
     public registerService = async (data: LoginProps) => {
         try {
             let { email, password,role,username } = data;
