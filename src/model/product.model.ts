@@ -36,9 +36,9 @@ const schema = new Schema(
             default: ReviewState.Pending 
         },
         createdBy: { 
-            type:String, 
-         
-            required: true 
+            type: Schema.Types.ObjectId, 
+        ref: 'User',  // Reference to the User model
+        required: true 
         } // Reference to the User model
     },
     { timestamps: true } // Adds createdAt and updatedAt fields

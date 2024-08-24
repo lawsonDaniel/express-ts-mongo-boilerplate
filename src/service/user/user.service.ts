@@ -87,6 +87,11 @@ class userServiceClass {
                 console.log("Filtering by temperature",filter.temp)
                 query.temp = { $gt: 70 };
             }
+            console.log("filter.id",filter.id)
+            if (filter.id) {
+                console.log("Filtering by temperature",filter.id)
+                query.promoId =filter.id;
+            }
     
             // Calculate the skip value for pagination
             const skip = (page - 1) * limit;
