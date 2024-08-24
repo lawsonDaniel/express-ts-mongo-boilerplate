@@ -29,6 +29,8 @@ const schema = new Schema(
         category: { type: String, required: true },
         temp: { type: Number, required: false, default: 10 },
         promoId:{type: String, required: true},
+        title:{type: String, required:true},
+        offerType:{type: String, required: true},
         approved: { 
             type: String, 
             enum: Object.values(ReviewState), 

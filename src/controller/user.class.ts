@@ -4,8 +4,9 @@ import userService from "../service/user/user.service";
 class userControllerClass {
     public getProduct = async(req:any, res:Response)=>{
         try{
-            const query = req.params;
-            const {_id} = req?.user;
+            const query = req.query;  // Use req.query instead of req.params
+            const { _id } = req?.user;
+            console.log("query", query);
             const response = await userService.filter(query,_id)
             return res.json(response)
         }catch(err){

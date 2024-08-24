@@ -7,7 +7,7 @@ class userServiceClass {
     public filter = async (filter: any, _id: string, page: number = 1, limit: number = 10) => {
         try {
             const query: any = {};
-    
+            console.log("filter.approved",filter.approved)
             // Filtering by approved
             if (filter.approved !== undefined) {
                 query.approved = filter.approved;
@@ -19,10 +19,11 @@ class userServiceClass {
             }
     
             // Filtering by expired
-            if (query.expired) {
+            if (Boolean(filter.expired) === true) {
+                console.log("reaching here expired")
                 const currentDate = new Date();
-                query.endDate = { $gt: currentDate };
-                query.endTime = { $gt: currentDate };
+                query.endDate = { $lt: currentDate };
+        
             }
     
             // Calculate the skip value for pagination
