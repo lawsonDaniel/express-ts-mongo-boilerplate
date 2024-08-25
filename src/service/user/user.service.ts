@@ -12,7 +12,7 @@ class userServiceClass {
             if (filter.approved !== undefined) {
                 query.approved = filter.approved;
             }
-    
+            console.log("id from user",_id)
             // Filtering by createdBy
             if (_id) {
                 query.createdBy = _id;
