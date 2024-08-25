@@ -89,30 +89,70 @@ class AuthService {
     public updateService = async (data: any, id: string) => {
         try {
             // Check if the user exists
-            const isUserFound = await User.findOne({ _id: id }); // Assuming you're using MongoDB and _id as the primary key
-            if (!isUserFound) {
+            const user = await User.findOne({ _id: id });
+            if (!user) {
                 return {
                     message: "User not found",
                     status: 404,
                 };
             }
-    
-            // Update the user with the new data
-            await isUserFound.updateOne(data);
-    
-            // Return a success response
+           console.log("data",data) 
+            // Handle email and password update
+            if (data.email && data.password) {
+                console.log('reaching here')
+                const isPasswordValid = await bcrypt.compare(data.password, user.password);
+                if (isPasswordValid) {
+                    delete data.password; // Remove password from data
+                    await user.updateOne(data);
+                    return {
+                        message: "User email updated successfully",
+                        status: 200,
+                        data: await User.findOne({ _id: id }),
+                    };
+                }else{
+                    return {
+                        message: "Wrong Password",
+                        status: 401,
+                       
+                    }; 
+                }
+            }else if (data.password && data.newPassword) {
+                const isPasswordValid = await bcrypt.compare(data.password, user.password);
+                if (isPasswordValid) {
+                    const hashedPassword = await bcrypt.hash(data.newPassword, 10);
+                    await user.updateOne({ password: hashedPassword });
+                    return {
+                        message: "User updated successfully",
+                        status: 200,
+                        data: await User.findOne({ _id: id }),
+                    };
+                }else{
+                    return {
+                        message: "Wrong Password",
+                        status: 401,
+                       
+                    }; 
+                }
+            }else{
+                 // Update the user with the remaining data
+            await user.updateOne(data);
             return {
                 message: "User updated successfully",
                 status: 200,
-                data: await User.findOne({ _id: id }), // Fetch the updated user data
+                data: await User.findOne({ _id: id }),
             };
-        } catch (err:any) {
+    
+            }
+    
+           
+        } catch (err: any) {
             return {
-                message: err?.message, // Get the error message
+                message: err.message,
                 status: 500,
             };
         }
     };
+    
     
     public registerService = async (data: LoginProps) => {
         try {
