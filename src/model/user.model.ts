@@ -21,6 +21,7 @@ const schema = new Schema(
         link:{type: String, required:false},
         name:{type: String, required:false},
         phone:{type: String, required:false},
+        whatsapp:{type:String, required:false}
     },
     { timestamps: true } // Adds createdAt and updatedAt fields
 );
