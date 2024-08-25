@@ -116,8 +116,15 @@ class AuthService {
                        
                     }; 
                 }
-            }else if (data.password && data.newPassword) {
-                const isPasswordValid = await bcrypt.compare(data.password, user.password);
+            }else if (data.oldPassword	 && data.newPassword) {
+                if(data.newPassword !== data.retypeNewPassword){
+                    return {
+                        message: "Password do not match",
+                        status: 200,
+                        data: await User.findOne({ _id: id }),
+                    }; 
+                }
+                const isPasswordValid = await bcrypt.compare(data.oldPassword, user.password);
                 if (isPasswordValid) {
                     const hashedPassword = await bcrypt.hash(data.newPassword, 10);
                     await user.updateOne({ password: hashedPassword });

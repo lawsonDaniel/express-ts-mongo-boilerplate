@@ -19,7 +19,8 @@ const schema = new Schema(
         contact:{type: String,required:false},
         address:{type: String, required:false},
         link:{type: String, required:false},
-        name:{type: String, required:false}
+        name:{type: String, required:false},
+        phone:{type: String, required:false},
     },
     { timestamps: true } // Adds createdAt and updatedAt fields
 );
