@@ -124,7 +124,33 @@ class userServiceClass {
             };
         }
     }
-    
+
+    public updateTemperature = async (data: any) => {
+        try {
+            const updatePromo:any = await Product.updateOne(
+                { promoId: data?.id },  // Filter condition
+                { $set: { temp: data?.temp } }  // Update operation
+            );
+    console.log("update promo",updatePromo)
+            if (updatePromo?.modifiedCount > 0) {
+                return {
+                    message: "Promo temperature updated successfully",
+                    data: updatePromo,
+                    status: 200
+                };
+            } else {
+                return {
+                    message: "Promo temperature not updated",
+                    status: 400
+                };
+            }
+        } catch (err) {
+            return {
+                message: err || 'An error occurred',
+                status: 500
+            };
+        }
+    }
     
     public getPromoCount = async (id: string) => {
         try {

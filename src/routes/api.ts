@@ -19,6 +19,7 @@ router.patch('/products',isAuthenticated,adminClass.acceptDeclineProduct)
 router.get('/promoDetails',isAuthenticated,userClass.getProduct)
 router.get('/promoDetailsCount',isAuthenticated,userClass.getProductCount)
 router.post('/promo',isAuthenticated,userClass.uploadPromo)
+router.patch('/promoTemp',userClass.updateTemprature)
 //public routes
 router.get('/promo',userClass.getPromo)
 

@@ -43,6 +43,17 @@ class userControllerClass {
         }
         
     }
+    public updateTemprature = async(req:Request, res:Response)=>{
+        try{
+            const response = await userService.updateTemperature(req.body)
+            return res.json(response)
+        }catch(err){
+            return{
+                message:err,
+                status:500
+            }
+        }
+    }
     public uploadPromo = async(req:any, res:Response)=>{
         try{
             const body = req.body;
