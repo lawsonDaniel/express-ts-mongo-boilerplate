@@ -18,6 +18,7 @@ router.patch('/products',isAuthenticated,adminClass.acceptDeclineProduct)
 //dashboard details user
 router.get('/promoDetails',isAuthenticated,userClass.getProduct)
 router.get('/promoDetailsCount',isAuthenticated,userClass.getProductCount)
+router.get('/promoAdminDetailsCount',isAuthenticated,userClass.getAdminProductCount)
 router.post('/promo',isAuthenticated,userClass.uploadPromo)
 router.patch('/promoTemp',userClass.updateTemprature)
 //public routes

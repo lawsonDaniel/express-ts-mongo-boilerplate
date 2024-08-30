@@ -43,6 +43,20 @@ class userControllerClass {
         }
         
     }
+    public getAdminProductCount = async(req:any, res:Response)=>{
+        try{
+            const query = req.params;
+          
+            const response = await userService.getAdminPromoCount()
+            return res.json(response)
+        }catch(err){
+            return{
+                message:err,
+                status:500
+            }
+        }
+        
+    }
     public updateTemprature = async(req:Request, res:Response)=>{
         try{
             const response = await userService.updateTemperature(req.body)

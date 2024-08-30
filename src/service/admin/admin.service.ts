@@ -33,8 +33,15 @@ class AdminService {
       };
     }
   };
-  public getProductDetails = async (query: ProductQueryParams, page: number = 1, perPage: number = 10) => {
+  public getProductDetails = async (filter:any, page: number = 1, perPage: number = 10) => {
     try {
+      const query: any = {};
+      
+      // Filtering by approved
+      if (filter.approved !== undefined) {
+          query.approved = filter.approved;
+      }
+      console.log("filter.approved",query.approved )
       // Validate and set default values for page and perPage
       const currentPage = page > 0 ? page : 1; // Ensure page is positive
       const itemsPerPage = perPage > 0 ? perPage : 10; // Ensure perPage is positive
@@ -43,11 +50,10 @@ class AdminService {
       const skip = (currentPage - 1) * itemsPerPage;
   
       // Perform the database query with pagination
-      const products = await Product.find({
-        ...query,
-        skip,
-        limit: itemsPerPage
-      });
+      const products = await Product.find(query)
+      .populate('createdBy')
+      .skip(skip)
+      .limit(itemsPerPage);
   
       // Get the total number of products for pagination info
       const totalProducts = await Product.countDocuments(query);
@@ -165,9 +171,10 @@ return {
     try{
         // Use Promise.all to upload all images concurrently
     const uploadPromises = bannerImages.map(base64Image => {
-     return  uploadBase64Image(base64Image,'banner_images')
+      if(base64Image !== null)   return  uploadBase64Image(base64Image,'banner_images')
+   
     });
-    const results = await Promise.all(uploadPromises);
+    const results:any = await Promise.all(uploadPromises);
     const response = await this.updateBanners(results)
   
     return {

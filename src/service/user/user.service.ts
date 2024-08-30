@@ -203,6 +203,56 @@ class userServiceClass {
         }
     }
 
+    public getAdminPromoCount = async () => {
+        try {
+           
+    
+            // Use Promise.all to concurrently execute countDocuments queries
+            const [
+                totalProducts,
+                totalUnderReview,
+                totalApproved,
+                totalDeclined,
+                totalExpired,
+            ] = await Promise.all([
+                Product.countDocuments(), // Count total products created by the user
+                Product.countDocuments({
+                    approved: ReviewState.Pending, // Products under review
+                  
+                }),
+                Product.countDocuments({
+                    approved: ReviewState.True, // Approved products
+                  
+                }),
+                Product.countDocuments({
+                    approved: ReviewState.False, // Declined products
+                 
+                }),
+                Product.countDocuments({
+                    endDate: { $lt: new Date() }, // Expired products
+                   
+                }),
+            ]);
+    
+            return {
+                message: "Dashboard information successfully generated",
+                status: 200,
+                data: {
+                    totalProducts,
+                    totalUnderReview,
+                    totalApproved,
+                    totalDeclined,
+                    totalExpired,
+                }
+            };
+        } catch (err) {
+            return {
+                message: err || 'Internal Server Error',
+                status: 500
+            };
+        }
+    }
+
    public createPromo = async (data: any, id: string) => {
         try {
             const { images } = data;
