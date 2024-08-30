@@ -13,12 +13,14 @@ class AdminService {
       // Await all countDocuments promises
       const totalUsers = await User.countDocuments();
       const totalProducts = await Product.countDocuments();
+      const totalNew = await Product.countDocuments({approved: ReviewState.Pending});
       const totalApproved = await Product.countDocuments({ approved: ReviewState.True });
       const totalDeclined = await Product.countDocuments({ approved: ReviewState.False });
       return {
         message: "Dashboard information successfully generated",
         status: 200,
         data: {
+          totalNew,
           totalUsers,
           totalProducts,
           totalApproved,
