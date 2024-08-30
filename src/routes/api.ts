@@ -15,6 +15,8 @@ router.patch('/auth/user',isAuthenticated,authClass.update)
 router.get('/dashboard',isAuthenticated,adminClass.getDashboardDetails)
 router.get('/products',isAuthenticated,adminClass.getProducts)
 router.patch('/products',isAuthenticated,adminClass.acceptDeclineProduct)
+//user routes
+router.get('/user',isAuthenticated,adminClass.getAllUsers)
 //dashboard details user
 router.get('/promoDetails',isAuthenticated,userClass.getProduct)
 router.get('/promoDetailsCount',isAuthenticated,userClass.getProductCount)
@@ -24,11 +26,12 @@ router.patch('/promoTemp',userClass.updateTemprature)
 //public routes
 router.get('/promo',userClass.getPromo)
 
-//user routes
-router.get('/user',isAuthenticated,adminClass.getAllUsers)
+
 //banner images
 router.post('/bannerImages',isAuthenticated,adminClass.uploadBannerImage)
 router.get('/bannerImages',adminClass.bannerImage)
+
+
 
 export default router;
 

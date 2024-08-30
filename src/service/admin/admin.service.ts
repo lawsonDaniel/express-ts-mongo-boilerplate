@@ -12,7 +12,7 @@ class AdminService {
     try {
       // Await all countDocuments promises
       const totalUsers = await User.countDocuments();
-      const totalProducts = await Product.countDocuments({approved: ReviewState.Pending});
+      const totalProducts = await Product.countDocuments();
       const totalApproved = await Product.countDocuments({ approved: ReviewState.True });
       const totalDeclined = await Product.countDocuments({ approved: ReviewState.False });
       return {
