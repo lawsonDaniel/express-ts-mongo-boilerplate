@@ -13,11 +13,12 @@ class AdminClass {
         const response = await Admin.getProductDetails(query,page as unknown as number,perPage as unknown as number)
         return res.status(response.status).json(response)
     }
-    public acceptDeclineProduct = async(req: Request, res: Response)=>{
+    public acceptDeclineProduct = async(req: any, res: Response)=>{
    const {id}  = req.query
    const {accept} = req.body
+   const {_id} = req?.user;
    console.log("idd",id,accept)
-        const response = await Admin.acceptDeclineProduct(id as unknown as string,accept)
+        const response = await Admin.acceptDeclineProduct(id as unknown as string,accept,_id as string)
         return res.status(response.status).json(response)
     }
     public getAllUsers = async(req: Request, res: Response)=>{

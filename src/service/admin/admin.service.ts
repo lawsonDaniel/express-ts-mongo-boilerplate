@@ -3,6 +3,7 @@ import { Banner } from "../../model/banner.model";
 import { Product, ReviewState } from "../../model/product.model";
 import { User } from "../../model/user.model";
 import { uploadBase64Image } from "../../util/upload";
+import { Notifications } from "../../model/Notification.model";
 
 interface ProductQueryParams {
   approved?:boolean
@@ -80,31 +81,54 @@ class AdminService {
       };
     }
   }
-  public acceptDeclineProduct = async(id: string,accept: boolean)=>{
-    try{
-   // Update the product
-const updatedProduct = await Product.updateOne({ _id: id }, { approved: String(accept) });
-if (updatedProduct.modifiedCount === 0) {
-  return {
-    message: "Product update failed",
-    status: 400
-  };
-}
-
-// Return a success response if needed
-return {
-  message: "Product updated successfully",
-  status: 200
-};
-
-    }catch(err){
-      return {
-        message:err,
-        status:500
+  public acceptDeclineProduct = async (id: string, accept: boolean, adminId: string) => {
+    try {
+      // Update the product and retrieve the updated product
+      const updatedProduct = await Product.findOneAndUpdate(
+        { _id: id },
+        { approved: accept }, // Store boolean value directly
+        { new: true } // Return the updated document
+      );
+  
+      // Check if the product was updated
+      if (!updatedProduct) {
+        return {
+          message: "Product update failed",
+          status: 400
+        };
       }
+  
+      console.log('updated product', updatedProduct);
+  
+      // Ensure the updated product has a createdBy and _id before proceeding
+      if (updatedProduct.createdBy && updatedProduct._id) {
+        // Create a notification
+        await Notifications.create({
+          user: updatedProduct.createdBy,
+          Promo: updatedProduct._id,
+          approvedBy: adminId
+        });
+      } else {
+        return {
+          message: "Missing required fields in updated product",
+          status: 400
+        };
+      }
+  
+      // Return a success response
+      return {
+        message: "Product updated successfully",
+        status: 200
+      };
+    } catch (err) {
+      console.error('Error updating product:', err);
+      return {
+        message: err|| "An error occurred",
+        status: 500
+      };
     }
-
   }
+  
   public getAllUsers = async(page:number,perPage:number)=>{
     try {
       // Validate and set default values for page and perPage
