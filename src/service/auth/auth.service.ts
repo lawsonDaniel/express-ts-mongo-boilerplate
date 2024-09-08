@@ -3,6 +3,7 @@ import { User } from "../../model/user.model";
 import { apiResponse } from "../../util/apiResponse";
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken';
+import { uploadBase64Image } from "../../util/upload";
 
 interface LoginProps{
     email:string;
@@ -86,6 +87,45 @@ class AuthService {
             }
         }
     }
+    public updateProfile = async (data: any, id: string) => {
+        try {
+            // find user by id
+            const user = await User.findById(id);
+            
+            if (!user) {
+                return {
+                    message: "User not found",
+                    status: 404
+                };
+            }
+    
+            // upload image to cloudinary
+            const newProfileImage = await uploadBase64Image(data, 'profile_image');
+    
+            if (!newProfileImage?.secure_url) {
+                return {
+                    message: "Failed to upload image",
+                    status: 400
+                };
+            }
+    
+            user.image = newProfileImage.secure_url;
+    
+            // Save updated user document
+            await user.save();
+    
+            return {
+                message: 'Profile image updated',
+                status: 201
+            };
+        } catch (err) {
+            return {
+                message: err || 'Internal server error',
+                status: 500
+            };
+        }
+    };
+    
     public updateService = async (data: any, id: string) => {
         try {
             // Check if the user exists

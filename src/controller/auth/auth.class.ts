@@ -20,6 +20,12 @@ class Auth{
         console.log("response",response)
        return res.json(response)
     };
+    public updateProfile = async (req:any, res:Response) => {
+        const {_id} = req?.user;
+        const {profile_image} = req.body;
+        const response = await authService.updateProfile(profile_image,_id)
+        return res.json(response)
+    };
     public forgetPassword = async (req:Request, res:Response) => {};
     public getAuthUser = async (req:any, res:Response) => {
          const {email} = req?.user
