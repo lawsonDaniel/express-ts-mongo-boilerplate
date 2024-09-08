@@ -65,7 +65,9 @@ class userServiceClass {
             if (Boolean(filter.approved) === true || filter.approved === false) {
                 query.approved = filter.approved;
             }
-    
+    if(filter.category){
+        query.category = filter.category;
+    }
             // Filtering by items that will expire in 24 hours or less
             if (Boolean(filter.ending_soon) === true) {
                 const currentDate = new Date();
