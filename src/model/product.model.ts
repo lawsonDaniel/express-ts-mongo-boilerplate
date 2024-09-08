@@ -31,6 +31,7 @@ const schema = new Schema(
             max: 100, },
         promoId:{type: String, required: true},
         title:{type: String, required:true},
+        rejected:{type: String, required:true},
         offerType:{type: String, required: true},
         approved: { 
             type: String, 

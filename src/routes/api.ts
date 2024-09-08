@@ -25,7 +25,8 @@ router.post('/promo',isAuthenticated,userClass.uploadPromo)
 router.patch('/promoTemp',userClass.updateTemprature)
 //public routes
 router.get('/promo',userClass.getPromo)
-
+//notification routes
+router.get('/notifications',isAuthenticated,userClass.getNotification)
 
 //banner images
 router.post('/bannerImages',isAuthenticated,adminClass.uploadBannerImage)

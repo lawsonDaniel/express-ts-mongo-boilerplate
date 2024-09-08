@@ -68,6 +68,33 @@ class userControllerClass {
             }
         }
     }
+    public getNotification = async (req: any, res: Response) => {
+        try {
+            console.log('request',req?.user)
+          if (!req?.user || !req?.user._id) {
+            return res.status(400).json({
+              message: "User ID not found in request.",
+              status: 400,
+            });
+          }
+      
+          const { _id } = req.user;
+          const response = await userService.getNotification(_id);
+      
+          return res.status(200).json({
+            data: response,
+            status: 200,
+          });
+        } catch (err: any) {
+          console.error('Error in getNotification:', err.message || err);
+      
+          return res.status(500).json({
+            message: err.message || "Internal Server Error",
+            status: 500,
+          });
+        }
+      };
+       
     public uploadPromo = async(req:any, res:Response)=>{
         try{
             const body = req.body;

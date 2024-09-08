@@ -2,6 +2,7 @@ import { AnyPtrRecord } from "dns";
 import { Product, ReviewState } from "../../model/product.model";
 import { generateAlphaNumericCodes, uploadBase64Image } from "../../util/upload";
 import mongoose from "mongoose";
+import { Notifications } from "../../model/Notification.model";
 
 class userServiceClass {
     public filter = async (filter: any, _id: string, page: number = 1, limit: number = 10) => {
@@ -118,6 +119,27 @@ class userServiceClass {
                 }
             };
         } catch (err) {
+            return {
+                message: err || 'An error occurred',
+                status: 500
+            };
+        }
+    }
+
+    public getNotification = async (id: string)=>{
+        try{
+            const notification = await Notifications.find({
+                user: id
+            }).populate('user')  // Populate the 'user' field
+              .populate('Promo'); // Populate the 'Promo' field
+              console.log("notification",notification)
+              return {
+                message: 'Notifications gotten',
+                status: 200,
+                data: notification,
+                
+            };
+        }catch(err){
             return {
                 message: err || 'An error occurred',
                 status: 500
