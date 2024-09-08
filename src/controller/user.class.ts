@@ -19,7 +19,6 @@ class userControllerClass {
     public getPromo = async(req:any, res:Response)=>{
         try{
             const query = req.query;
-            console.log("filterquery",query)
             const response = await userService.publicFilter(query)
             return res.json(response)
         }catch(err){
@@ -32,7 +31,7 @@ class userControllerClass {
     public getProductCount = async(req:any, res:Response)=>{
         try{
             const query = req.params;
-            const {_id} = req?.user;
+            const {_id} = req?.user; 
             const response = await userService.getPromoCount(_id)
             return res.json(response)
         }catch(err){
