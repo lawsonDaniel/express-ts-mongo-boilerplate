@@ -56,15 +56,18 @@ class userControllerClass {
         }
         
     }
-    public updateTemprature = async(req:Request, res:Response)=>{
+    public updateTemprature = async(req:any, res:Response)=>{
         try{
-            const response = await userService.updateTemperature(req.body)
+            const {_id} = req?.user; 
+            console.log("user id",_id)
+            const response = await userService.updateTemperature(req.body,_id)
             return res.json(response)
         }catch(err){
-            return{
+            console.log("error from here",err)
+            return res.json({
                 message:err,
                 status:500
-            }
+            })
         }
     }
     public getNotification = async (req: any, res: Response) => {

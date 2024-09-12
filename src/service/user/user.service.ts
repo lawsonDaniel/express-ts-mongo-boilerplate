@@ -149,13 +149,35 @@ class userServiceClass {
         }
     }
 
-    public updateTemperature = async (data: any) => {
+    public updateTemperature = async (data: any, user_id: string) => {
         try {
-            const updatePromo:any = await Product.updateOne(
-                { promoId: data?.id },  // Filter condition
-                { $set: { temp: data?.temp } }  // Update operation
+            console.log("it is reaching hear")
+            // Check if user has already rated
+            const existingPromo = await Product.findOne({
+                promoId: data?.id,
+                tempUserIds: { $in: [user_id] }  // Check if the user is already in the array
+            });
+            
+            console.log("existingPromo",existingPromo)
+            if (existingPromo) {
+                return {
+                    message: "User has already rated this promo",
+                    status: 400
+                };
+            }
+    
+            // Increment the temperature by 1 and add user to the array
+            const updatePromo: any = await Product.updateOne(
+                { 
+                    promoId: data?.id,
+                    approved:"true"
+                 },  // Filter condition
+                {
+                    $inc: { temp: data?.increase ? 1 : -1 }, // Increment temp by 1
+                    $addToSet: {tempUserIds: user_id }  // Add user to the array if not already present
+                }
             );
-    console.log("update promo",updatePromo)
+            console.log("updatePromo",updatePromo)
             if (updatePromo?.modifiedCount > 0) {
                 return {
                     message: "Promo temperature updated successfully",
@@ -175,6 +197,8 @@ class userServiceClass {
             };
         }
     }
+    
+    
     
     public getPromoCount = async (id: string) => {
         try {

@@ -31,7 +31,7 @@ const schema = new Schema(
             max: 100, },
         promoId:{type: String, required: true},
         title:{type: String, required:true},
-        rejected:{type: String, required:true},
+        rejected:{type: String, required:false},
         offerType:{type: String, required: true},
         approved: { 
             type: String, 
@@ -39,6 +39,11 @@ const schema = new Schema(
             required: true, 
             default: ReviewState.Pending 
         },
+        tempUserIds: [{
+            type: Schema.Types.ObjectId,
+            ref: 'User',  // Reference to the User model
+            required: true
+          }],
         createdBy: { 
             type: Schema.Types.ObjectId, 
         ref: 'User',  // Reference to the User model

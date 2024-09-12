@@ -23,7 +23,7 @@ router.get('/promoDetails',isAuthenticated,userClass.getProduct)
 router.get('/promoDetailsCount',isAuthenticated,userClass.getProductCount)
 router.get('/promoAdminDetailsCount',isAuthenticated,userClass.getAdminProductCount)
 router.post('/promo',isAuthenticated,userClass.uploadPromo)
-router.patch('/promoTemp',userClass.updateTemprature)
+router.patch('/promoTemp',isAuthenticated,userClass.updateTemprature)
 //public routes
 router.get('/promo',userClass.getPromo)
 //notification routes
