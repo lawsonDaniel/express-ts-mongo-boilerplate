@@ -65,9 +65,12 @@ class userServiceClass {
             if (Boolean(filter.approved) === true || filter.approved === false) {
                 query.approved = filter.approved;
             }
-    if(filter.category){
-        query.category = filter.category;
-    }
+    
+            // Filtering by category
+            if (filter.category) {
+                query.category = filter.category;
+            }
+    
             // Filtering by items that will expire in 24 hours or less
             if (Boolean(filter.ending_soon) === true) {
                 const currentDate = new Date();
@@ -88,13 +91,19 @@ class userServiceClass {
     
             // Filtering by temperature
             if (Boolean(filter.temp) === true) {
-                console.log("Filtering by temperature",filter.temp)
+                console.log("Filtering by temperature", filter.temp);
                 query.temp = { $gt: 70 };
             }
-            console.log("filter.id",filter.id)
+    
+            // Filtering by ID
             if (filter.id) {
-                console.log("Filtering by temperature",filter.id)
-                query.promoId =filter.id;
+                console.log("Filtering by promo ID", filter.id);
+                query.promoId = filter.id;
+            }
+    
+            // Search by title (case-insensitive, partial match)
+            if (filter.title) {
+                query.title = { $regex: filter.title, $options: 'i' }; // 'i' for case-insensitive
             }
     
             // Calculate the skip value for pagination
@@ -127,6 +136,7 @@ class userServiceClass {
             };
         }
     }
+    
 
     public getNotification = async (id: string)=>{
         try{
