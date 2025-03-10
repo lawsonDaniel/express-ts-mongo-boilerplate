@@ -17,9 +17,9 @@ const swaggerOptions = {
   definition: {
     openapi: '3.0.0',
     info: {
-      title: 'Oga Promo Admin',
+      title: 'Digifix',
       version: '1.0.0',
-      description: 'A simple API'
+      description: 'This is the server for Digifix'
     },
   },
   apis: ['./src/routes/*.ts'], // Path to the API docs
@@ -28,14 +28,9 @@ const swaggerOptions = {
 
 
 
-const dbconnectionString: string = process.env.DB_CONNECTION_STRING as string 
-mongoose.connect(dbconnectionString).then((res)=>{
-  console.log("database connected")
-}).catch((err)=>{
-  console.log("error from database connection",err)
-})
+
 app.use(cors({
-  origin: ['http://localhost:3000','http://localhost:3002','https://ogapromo.vercel.app','https://ogapromoadmin.vercel.app'], // Allow frontend port
+  origin: ['http://localhost:3000',], // Allow frontend port
 }));
 // Initialize swagger-jsdoc
 const swaggerSpec = swaggerJsdoc(swaggerOptions);
