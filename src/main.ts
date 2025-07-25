@@ -2,10 +2,10 @@ import express from 'express';
 import swaggerUi from 'swagger-ui-express';
 import swaggerJsdoc from 'swagger-jsdoc';
 import router from './routes/api';
-import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
 import cors from 'cors';
+import { Database } from './db';
 
 dotenv.config();
 const app = express();
@@ -44,8 +44,9 @@ app.use("/api/v1",router)
 app.get('/', (req: express.Request, res: express.Response) => {
   res.send('Hello World!');
 });
-
-
+//db connection // Database connection (optional, adjust as needed)
+const db = Database.getInstance();
+db.connect();
 app.listen(port, () => {
   console.log(`Server running at http://localhost:${port}`);
 });
